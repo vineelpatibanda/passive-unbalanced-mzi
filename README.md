@@ -40,6 +40,14 @@ The straight-waveguide model carries the measured dispersion (n_eff varies linea
 
 ![FSR vs ΔL](results/mzi_fsr_vs_dL.png)
 
+### Layout
+
+![MZI layouts](results/mzi_layouts.png)
+
+Physical layouts for each ΔL, generated with gdsfactory's parametric MZI (generic PDK, 500 nm Si waveguides) and written to GDS: [`mzi_dL50um.gds`](results/mzi_dL50um.gds), [`mzi_dL100um.gds`](results/mzi_dL100um.gds), [`mzi_dL200um.gds`](results/mzi_dL200um.gds). The image above is drawn by reading those GDS files back with KLayout's Python API. Open the GDS files in KLayout to inspect them directly.
+
+The extra arm length ΔL is folded into the lower loop, so the footprint grows vertically (71 → 146 µm) while the width stays at ~91 µm. The layout uses gdsfactory's default 1×2 MMI splitter/combiner; the circuit model uses an idealized 50/50 coupler. The FSR depends only on n_g and ΔL, so it is unaffected; matching the circuit model to the layout's actual splitter is part of the non-ideal-coupler next step.
+
 Using n_eff instead of n_g in the FSR formula would predict ~9.8 nm at ΔL = 100 µm — a ~66 % error. That gap is the main physics point this project demonstrates.
 
 ---
@@ -51,7 +59,7 @@ scripts/
   mzi_smoke_test.py          # MPB mode solve: n_eff, n_g (two methods), FSR prediction table
   mzi_from_scratch.py        # pure-NumPy transfer-matrix MZI, overlaid on sax (cross-check)
   mzi_circuit_and_layout.py  # sax wavelength sweep for ΔL = 50/100/200 µm + gdsfactory layout
-results/                     # spectra plots, GDS layout, console logs
+results/                     # spectra plots, GDS layouts + layout image, console summary
 docs/
   theory.md                  # MZI transfer function and FSR derivation
 environment.yml              # conda environment (pymeep)
@@ -63,7 +71,7 @@ environment.yml              # conda environment (pymeep)
 2. **Analytic prediction.** Phase difference Δφ = 2π·n_eff·ΔL/λ; transmission T_bar = cos²(Δφ/2), T_cross = sin²(Δφ/2); FSR = λ²/(n_g·ΔL).
 3. **Circuit simulation (sax).** Compose S-matrices for the splitter, the two arms and the combiner; sweep 1500–1600 nm (20,001 points); extract FSR from the spacing of the two peaks straddling 1550 nm. T_bar + T_cross = 1 is checked as an energy-conservation sanity test.
 4. **Independent cross-check.** The same MZI written from scratch as 2×2 transfer matrices in NumPy, overlaid on the sax result: maximum difference 1.14e-13 across the sweep (`results/mzi_scratch_vs_sax.png`).
-5. **Layout.** gdsfactory generates the MZI geometry for each ΔL and writes GDS, inspected in KLayout.
+5. **Layout.** gdsfactory generates the MZI geometry for each ΔL and writes GDS; the GDS files are read back with KLayout's Python API and drawn to an image (a layout round-trip check).
 
 Full derivation: [`docs/theory.md`](docs/theory.md).
 
