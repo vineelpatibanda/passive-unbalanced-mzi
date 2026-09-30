@@ -21,6 +21,7 @@ Outputs (written to ../results/ relative to this script):
     mzi_spectrum_dL<dL>um.png     bar/cross transmission, full sweep + zoom
     mzi_fsr_vs_dL.png             simulated vs analytic FSR for each dL
     mzi_dL<dL>um.gds              gdsfactory layout (generic PDK), open in KLayout
+    mzi_layouts.png               the three layouts drawn from the GDS files
     mzi_circuit_results.txt       summary table (same as console output)
 
 Run:
@@ -148,9 +149,42 @@ def write_layouts():
             path = RESULTS / f"mzi_dL{dl}um.gds"
             c.write_gds(path)
             paths.append(path.name)
-        return f"OK  ({', '.join(paths)})"
+        render_layouts_png()
+        return f"OK  ({', '.join(paths)}, mzi_layouts.png)"
     except Exception as exc:  # report and carry on
         return f"SKIPPED  ({type(exc).__name__}: {exc})"
+
+
+def render_layouts_png():
+    """Draw the written GDS files side by side (GitHub cannot display GDS).
+    Reads each GDS back with KLayout's Python API - a real round-trip check."""
+    import klayout.db as kdb
+    from matplotlib.patches import Polygon
+
+    fig, axes = plt.subplots(1, len(DELTA_L_UM), figsize=(4.2 * len(DELTA_L_UM), 4.6))
+    for ax, dl in zip(axes, DELTA_L_UM):
+        ly = kdb.Layout()
+        ly.read(str(RESULTS / f"mzi_dL{dl}um.gds"))
+        top = ly.top_cell()
+        region = kdb.Region()
+        for li in ly.layer_indexes():
+            region += kdb.Region(top.begin_shapes_rec(li))
+        for poly in region.merged().each():
+            pts = [(p.x * ly.dbu, p.y * ly.dbu) for p in poly.to_simple_polygon().each_point()]
+            ax.add_patch(Polygon(pts, closed=True, facecolor="#2b6cb0", edgecolor="#1a365d", lw=0.4))
+        box = top.dbbox()
+        pad = 5
+        ax.set_xlim(box.left - pad, box.right + pad)
+        ax.set_ylim(box.bottom - pad, box.top + pad)
+        ax.set_aspect("equal")
+        ax.set_title(f"ΔL = {dl} µm  ({box.width():.0f} × {box.height():.0f} µm)", fontsize=10)
+        ax.set_xlabel("x (µm)")
+        ax.grid(alpha=0.25)
+    axes[0].set_ylabel("y (µm)")
+    fig.suptitle("MZI layouts — gdsfactory generic PDK, Si waveguide layer (read back from GDS)", fontsize=11)
+    fig.tight_layout()
+    fig.savefig(RESULTS / "mzi_layouts.png", dpi=150)
+    plt.close(fig)
 
 
 # ----------------------------------------------------------------------------

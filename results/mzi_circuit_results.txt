@@ -26,6 +26,6 @@
       (ideal ER is infinite; the finite value is set by where sweep samples fall near the nulls)
     max |T_a + T_b - 1|       = 1.1e-15   (energy conservation)
 --------------------------------------------------------------------
-  Layout (gdsfactory, generic PDK): OK  (mzi_dL50um.gds, mzi_dL100um.gds, mzi_dL200um.gds)
+  Layout (gdsfactory, generic PDK): OK  (mzi_dL50um.gds, mzi_dL100um.gds, mzi_dL200um.gds, mzi_layouts.png)
   Plots and summary written to: /Users/vineelpatibanda/Downloads/passive-unbalanced-mzi/results
 ====================================================================
