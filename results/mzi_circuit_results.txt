@@ -1,0 +1,31 @@
+====================================================================
+  Passive unbalanced MZI — sax circuit simulation + layout
+====================================================================
+  n_eff(1550) = 2.4445   dn_eff/dlambda = -1.0392 /um   n_g = 4.0553
+  sweep 1500-1600 nm, 20001 points; ideal 50/50 couplers, lossless arms
+--------------------------------------------------------------------
+  dL =  50 um
+    FSR simulated (sax)       =  11.915 nm   (peaks around 1554.24 nm)
+    FSR analytic  (n_g)       =  11.914 nm   difference +0.01 %
+    FSR if n_eff were used    =  19.764 nm   (wrong formula, for contrast)
+    ER (ideal)                =    73.0 dB    IL (ideal) = 0.000 dB
+      (ideal ER is infinite; the finite value is set by where sweep samples fall near the nulls)
+    max |T_a + T_b - 1|       = 8.9e-16   (energy conservation)
+  dL = 100 um
+    FSR simulated (sax)       =   5.935 nm   (peaks around 1551.25 nm)
+    FSR analytic  (n_g)       =   5.934 nm   difference +0.02 %
+    FSR if n_eff were used    =   9.844 nm   (wrong formula, for contrast)
+    ER (ideal)                =    86.3 dB    IL (ideal) = 0.000 dB
+      (ideal ER is infinite; the finite value is set by where sweep samples fall near the nulls)
+    max |T_a + T_b - 1|       = 8.9e-16   (energy conservation)
+  dL = 200 um
+    FSR simulated (sax)       =   2.965 nm   (peaks around 1549.76 nm)
+    FSR analytic  (n_g)       =   2.961 nm   difference +0.13 %
+    FSR if n_eff were used    =   4.913 nm   (wrong formula, for contrast)
+    ER (ideal)                =    65.3 dB    IL (ideal) = 0.000 dB
+      (ideal ER is infinite; the finite value is set by where sweep samples fall near the nulls)
+    max |T_a + T_b - 1|       = 1.1e-15   (energy conservation)
+--------------------------------------------------------------------
+  Layout (gdsfactory, generic PDK): OK  (mzi_dL50um.gds, mzi_dL100um.gds, mzi_dL200um.gds)
+  Plots and summary written to: /Users/vineelpatibanda/Downloads/passive-unbalanced-mzi/results
+====================================================================

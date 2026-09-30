@@ -1,0 +1,15 @@
+name: pymeep
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pymeep=1.34.0
+  - mpb=1.12.0
+  - numpy
+  - matplotlib
+  - pip
+  - pip:
+      - gdsfactory==9.49.0
+      - gplugins==2.1.5
+      - sax==0.18.2
+      - klayout
